@@ -5,10 +5,11 @@ OBJS   = ransom.o
 EXEC = prog.exe
 RM = rm -rf *.o *.exe
 
-$(EXEC): $(OBJ)
+
+$(EXEC): $(OBJS)
 	$(CCLINK) $(OBJS) -o $(EXEC)
 
-main.o: ransom.c
+ransom.o: ransom.c
 	$(CC) $(CFLAGS) -c ransom.c	
 
 clean:

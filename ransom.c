@@ -9,14 +9,14 @@
 #include <string.h>
 
 struct Node {
-    char *word;
+	char *word;
     int num_of_words;
-    node *next;
-}node;
+    struct Node *next;
+} node;
 
 char* readline();
 char** split_string(char*);
-
+void print_list(struct Node* head);
 // Complete the checkMagazine function below.
 void checkMagazine(int magazine_count, char** magazine, int note_count, char** note);
 
@@ -135,53 +135,67 @@ char** split_string(char* str) {
 }
 
 void checkMagazine(int magazine_count, char** magazine, int note_count, char** note) {
-    int idx = 0;
-    struct Node *magazine_head = (struct Node)malloc(sizeof(struct Node));
+
+	//start creating magazine's words list
+	int idx = 0;
+    struct Node *magazine_head = (struct Node*)malloc(sizeof(struct Node));
     if (magazine_head == NULL) {
         printf("Failed to create magazine_node\n");
         return;
     }
 
-    while (**(magazine + idx) != '/0') {
-        int word_size = 0;
-        int start_of_word = idx;
-        while (**(magazine + idx) != ' ') {
-            if (**(magazine + idx) != '/0') {
-                --idx;
-                break;
-            }
+    magazine_head->word = NULL;
+    magazine_head->num_of_words = 0;
+    magazine_head->next = NULL;
 
+    for(int i = 0; i < magazine_count; ++i) {
+        int word_size = 0;
+        char *start_of_word = *(magazine) + idx;
+        while (*((*magazine) + idx) != '\0') {
             ++word_size;
             ++idx;
         }
-
         append_node(magazine_head, start_of_word, word_size);
+        printf("exit append\n");
+        printf("!!! %s\n", magazine_head->word);
+        print_list(magazine_head);
         ++idx;
     }
 
+    //start creating note's words list
     idx = 0;
-    struct Node* note_head = (struct Node)malloc(sizeof(struct Node));
-    while (**(note + idx) != '/0') {
-        int word_size = 0;
-        int start_of_word = idx;
-        while (**(note + idx) != ' ') {
-            if (**(note + idx) != '/0') {
-                --idx;
-                break;
-            }
+    struct Node *note_head = (struct Node*)malloc(sizeof(struct Node));
+    if (note_head == NULL) {
+    	printf("Failed to create magazine_node\n");
+        return;
+    }
 
+    note_head->word = NULL;
+    note_head->num_of_words = 0;
+    note_head->next = NULL;
+
+    for(int i = 0; i < note_count; ++i) {
+    	int word_size = 0;
+        char *start_of_word = *(note) + idx;
+        while (*((*note) + idx) != '\0') {
             ++word_size;
             ++idx;
         }
-
         append_node(note_head, start_of_word, word_size);
+        printf("exit append\n");
+        print_list(note_head);
         ++idx;
     }
-    
+
+    /*int i = 1;
     struct Node *tmp_note_node = note_head;
     while (tmp_note_node != NULL) {
+    	printf("checking word number %d in note\n", i++);
+    	int j = 0;
         struct Node *tmp_magazine_node = magazine_head;
+        printf("%s\n", tmp_magazine_node->word);
         while (tmp_magazine_node != NULL) {
+        	printf("compare word number %d in magazine\n", ++j);
             if (tmp_note_node->word == tmp_magazine_node->word) {
                 if (tmp_note_node->num_of_words > tmp_magazine_node->num_of_words) {
                     printf("No");
@@ -191,7 +205,7 @@ void checkMagazine(int magazine_count, char** magazine, int note_count, char** n
             tmp_magazine_node = tmp_magazine_node->next;
         }
         tmp_note_node = tmp_note_node->next;
-    }
+    }*/
     printf("Yes");
     destroy_list(magazine_head);
     destroy_list(note_head);
@@ -199,19 +213,22 @@ void checkMagazine(int magazine_count, char** magazine, int note_count, char** n
 
 void append_node(struct Node *head, char *word, int word_size){
     struct Node *tmp = head;
-    char* new_word = (char*)malloc(sizeof(char) * (word_size + 1));
+    char *new_word = (char*)malloc(sizeof(char) * (word_size + 1));
     if (new_word == NULL) {
         printf("Failed to create a new_word\n");
         free(new_word);
         return;
     }
+
     for (int i = 0; i < word_size; ++i) {
         new_word[i] = word[i];
     }
-    new_word[word_size] = '/0';
+    new_word[word_size] = '\0';
 
     while (tmp->next != NULL) {
+    	printf("word '%s' added\n", new_word);
         if (strcmp(new_word, tmp->word) == 0) {
+        	printf("word '%s' exist\n", new_word);
             ++(tmp->num_of_words);
             free(new_word);
             return;
@@ -219,7 +236,7 @@ void append_node(struct Node *head, char *word, int word_size){
         tmp = tmp->next;
     }
 
-    struct Node *new_node = (struct node*)malloc(sizeof(struct node));
+    struct Node *new_node = (struct Node*)malloc(sizeof(struct Node));
     if (new_node == NULL) {
         printf("Failed to create a node\n");
         free(new_node);
@@ -230,7 +247,7 @@ void append_node(struct Node *head, char *word, int word_size){
     new_node->num_of_words = 1;
     new_node->next = NULL;
 
-    if (head == NULL){
+    if (head->word == NULL){
         head = new_node;
         return;
     }
@@ -247,3 +264,13 @@ void destroy_list(struct Node* head) {
         free(tmp);
     }
 }
+
+void print_list(struct Node* head){
+	struct Node *node = head;
+    while (node != NULL) {
+    	printf("%d\n", node->num_of_words);
+    	node = node->next;
+	    }
+}
+
+
