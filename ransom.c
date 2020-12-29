@@ -166,7 +166,7 @@ void checkMagazine(int magazine_count, char** magazine, int note_count, char** n
     idx = 0;
     struct Node *note_head = (struct Node*)malloc(sizeof(struct Node));
     if (note_head == NULL) {
-    	printf("Failed to create magazine_node\n");
+    	free(note_head);
         return;
     }
 
