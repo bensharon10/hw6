@@ -213,7 +213,7 @@ void checkMagazine(int magazine_count, char** magazine, int note_count, char** n
 
         tmp_note_node = tmp_note_node->next;
     }
-
+    print_list(magazine_head);
     printf("Yes");
     destroy_list(&magazine_head);
     destroy_list(&note_head);
@@ -221,6 +221,7 @@ void checkMagazine(int magazine_count, char** magazine, int note_count, char** n
 
 void append_node(struct Node **head, char *word, int word_size){
     struct Node *tmp = *head;
+    struct Node *last = tmp;
     char *new_word = (char*)malloc(sizeof(char) * (word_size + 1));
     if (new_word == NULL) {
         printf("Failed to create new_word\n");
@@ -233,22 +234,16 @@ void append_node(struct Node **head, char *word, int word_size){
     }
     new_word[word_size] = '\0';
 
-    if(tmp->word != NULL){
+    //if(tmp->next != NULL){
+    	/*printf("!!!\n");
     	if (strcmp(new_word, tmp->word) == 0) {
+    		printf("@@@\n");
     	    ++(tmp->num_of_words);
+    	    printf("%d\n", tmp->num_of_words);
     	    free(new_word);
     	    return;
     	}
-    	while (tmp->next != NULL) {
-    		if (strcmp(new_word, tmp->word) == 0) {
-    			++(tmp->num_of_words);
-    			free(new_word);
-    			return;
-    		}
-
-    		tmp = tmp->next;
-    	}
-    }
+*/
 
     if ((*head)->word == NULL){
         (*head)->word = new_word;
@@ -256,6 +251,20 @@ void append_node(struct Node **head, char *word, int word_size){
         (*head)->next = NULL;
         return;
     }
+
+    do {
+    	if (strcmp(new_word, tmp->word) == 0) {
+    		++(tmp->num_of_words);
+    		free(new_word);
+    		return;
+    	}
+
+    	last = tmp;
+    	tmp = tmp->next;
+    } while (tmp != NULL);
+    //}
+
+
 
     struct Node *new_node = (struct Node*)malloc(sizeof(struct Node));
     if (new_node == NULL) {
@@ -268,9 +277,7 @@ void append_node(struct Node **head, char *word, int word_size){
     new_node->num_of_words = 1;
     new_node->next = NULL;
 
-
-
-    tmp->next = new_node;
+    last->next = new_node;
 }
 
 void destroy_list(struct Node **head) {
@@ -286,7 +293,7 @@ void destroy_list(struct Node **head) {
 void print_list(struct Node *head){
 	struct Node *node = head;
     while (node != NULL) {
-    	printf("%s\n", node->word);
+    	printf("%s, %d\n", node->word, node->num_of_words);
     	node = node->next;
 	}
 }
