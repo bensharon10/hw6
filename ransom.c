@@ -213,7 +213,7 @@ void checkMagazine(int magazine_count, char** magazine, int note_count, char** n
 
         tmp_note_node = tmp_note_node->next;
     }
-    print_list(magazine_head);
+
     printf("Yes");
     destroy_list(&magazine_head);
     destroy_list(&note_head);
